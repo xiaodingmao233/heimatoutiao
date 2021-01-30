@@ -4,7 +4,7 @@
       <div slot="header" class="clearfix">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>发布文章</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ this.$route.query.id ? '修改文章':'发布文章' }}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
       <el-form ref="form" :model="article" label-width="80px">
@@ -33,7 +33,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onPublish(false)">发布</el-button>
+          <el-button type="primary" @click="onPublish(false)">{{ this.$route.query.id ? '修改':'发布' }}</el-button>
           <el-button @click="onPublish(true)">存入草稿</el-button>
         </el-form-item>
       </el-form>
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { getChannels, addArticle } from '@/api/article'
+import { getChannels, addArticle, getArticle, updateArticle } from '@/api/article'
 export default {
   name: 'PublishIndex',
   components: {},
@@ -65,22 +65,44 @@ export default {
   watch: {},
   created () {
     this.loadChannels()
+    // console.log(this.$route.query.id)
+    if (this.$route.query.id) {
+      this.loadArticle()
+    }
   },
   mounted () { },
   methods: {
     onPublish (draft = false) {
-      addArticle(this.article, draft).then(res => {
-        // console.log(res)
-        this.$message({
-          type: 'success',
-          message: '发表成功'
+      if (this.$route.query.id) {
+        updateArticle(this.$route.query.id, draft, this.article).then(res => {
+          // console.log(res)
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          })
+          this.$router.push('/article')
         })
-      })
+      } else {
+        addArticle(this.article, draft).then(res => {
+          // console.log(res)
+          this.$message({
+            type: 'success',
+            message: '发表成功'
+          })
+          this.$router.push('/article')
+        })
+      }
     },
     loadChannels () {
       getChannels().then(res => {
         this.channels = res.data.data.channels
         // console.log(this.channels)
+      })
+    },
+    loadArticle () {
+      getArticle(this.$route.query.id).then(res => {
+        // console.log(res)
+        this.article = res.data.data
       })
     }
   }
