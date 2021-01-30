@@ -12,7 +12,8 @@
           <el-input v-model="article.title"></el-input>
         </el-form-item>
         <el-form-item label="内容">
-          <el-input type="textarea" v-model="article.content"></el-input>
+          <el-tiptap height="300" v-model="article.content" :extensions="extensions" placeholder="Write something …"></el-tiptap>
+          <!-- <el-input type="textarea" v-model="article.content"></el-input> -->
         </el-form-item>
         <el-form-item label="封面">
           <el-radio-group v-model="article.cover.type">
@@ -43,9 +44,28 @@
 
 <script>
 import { getChannels, addArticle, getArticle, updateArticle } from '@/api/article'
+import { uploadImage } from '@/api/image'
+import {
+  ElementTiptap,
+  Doc,
+  Text,
+  Paragraph,
+  Heading,
+  Bold,
+  Underline,
+  Italic,
+  Strike,
+  ListItem,
+  BulletList,
+  OrderedList,
+  Image
+} from 'element-tiptap'
+import 'element-tiptap/lib/index.css'
 export default {
   name: 'PublishIndex',
-  components: {},
+  components: {
+    'el-tiptap': ElementTiptap
+  },
   props: {},
   data () {
     return {
@@ -58,7 +78,30 @@ export default {
         },
         channel_id: null
       },
-      channels: []
+      channels: [],
+      extensions: [
+        new Doc(),
+        new Text(),
+        new Paragraph(),
+        new Heading({ level: 5 }),
+        new Bold({ bubble: true }), // 在气泡菜单中渲染菜单按钮
+        new Underline({ bubble: true, menubar: false }), // 在气泡菜单而不在菜单栏中渲染菜单按钮
+        new Italic(),
+        new Strike(),
+        new Image({
+          uploadRequest (file) {
+            const fd = new FormData()
+            fd.append('image', file)
+            return uploadImage(fd).then(res => {
+              // console.log(res)
+              return res.data.data.url
+            })
+          }
+        }),
+        new ListItem(),
+        new BulletList(),
+        new OrderedList()
+      ]
     }
   },
   computed: {},
