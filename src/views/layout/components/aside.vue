@@ -53,7 +53,7 @@ export default {
   },
   computed: {},
   watch: {},
-  create () { },
+  created () { },
   mounted () { },
   methods: {
     handleOpen (key, keyPath) {

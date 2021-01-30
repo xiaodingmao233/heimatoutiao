@@ -4,10 +4,10 @@
       <div slot="header" class="clearfix">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>活动管理</el-breadcrumb-item>
+          <el-breadcrumb-item>内容管理</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-      <el-form ref="form" :model="form" label-width="40px" size="small">
+      <el-form label-width="40px" size="small">
         <el-form-item label="状态">
           <el-radio-group v-model="status">
             <el-radio :label="null">全部</el-radio>
@@ -126,16 +126,6 @@ export default {
   props: {},
   data () {
     return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
       articles: [],
       articleStatus: [
         { status: 0, text: '草稿', type: 'info' },
@@ -156,7 +146,7 @@ export default {
   },
   computed: {},
   watch: {},
-  create () { },
+  created () { },
   mounted () {
     this.loadArticles(1)
     this.loadChannels()

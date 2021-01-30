@@ -52,7 +52,7 @@ export default {
   },
   computed: {},
   watch: {},
-  create () { },
+  created () { },
   mounted () {
     this.loadUserProfile()
   },

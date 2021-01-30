@@ -21,3 +21,14 @@ export const deleteArticle = articleId => {
     url: `/mp/v1_0/articles/${articleId}`
   })
 }
+
+export const addArticle = (data, draft) => {
+  return request({
+    method: 'post',
+    url: '/mp/v1_0/articles',
+    data,
+    params: {
+      draft
+    }
+  })
+}
