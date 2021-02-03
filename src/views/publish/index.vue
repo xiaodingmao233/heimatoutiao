@@ -7,11 +7,11 @@
           <el-breadcrumb-item>{{ this.$route.query.id ? '修改文章':'发布文章' }}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-      <el-form ref="form" :model="article" label-width="80px">
-        <el-form-item label="标题">
+      <el-form :rules="rules" ref="publish-form" :model="article" label-width="80px">
+        <el-form-item label="标题" prop="title">
           <el-input v-model="article.title"></el-input>
         </el-form-item>
-        <el-form-item label="内容">
+        <el-form-item label="内容" prop="content">
           <el-tiptap height="300" v-model="article.content" :extensions="extensions" placeholder="Write something …"></el-tiptap>
           <!-- <el-input type="textarea" v-model="article.content"></el-input> -->
         </el-form-item>
@@ -23,7 +23,7 @@
             <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="频道">
+        <el-form-item label="频道" prop="channel_id">
           <el-select v-model="article.channel_id" placeholder="请选择频道">
             <el-option
               v-for="(channel,index) in channels"
@@ -101,7 +101,29 @@ export default {
         new ListItem(),
         new BulletList(),
         new OrderedList()
-      ]
+      ],
+      rules: {
+        title: [
+          { required: true, message: '请输入文章标题', trigger: 'blur' },
+          { min: 3, max: 5, message: '长度在 5 到 30 个字符', trigger: 'blur' }
+        ],
+        content: [
+          {
+            validator (rule, value, callback) {
+              console.log('11')
+              if (value === '<p></p>') {
+                callback(new Error('请输入文章内容'))
+              } else {
+                callback()
+              }
+            }
+          },
+          { required: true, message: '请输入文章内容', trigger: 'blur' }
+        ],
+        channel_id: [
+          { required: true, message: '请选择频道', trigger: 'change' }
+        ]
+      }
     }
   },
   computed: {},
@@ -116,25 +138,31 @@ export default {
   mounted () { },
   methods: {
     onPublish (draft = false) {
-      if (this.$route.query.id) {
-        updateArticle(this.$route.query.id, draft, this.article).then(res => {
-          // console.log(res)
-          this.$message({
-            type: 'success',
-            message: '修改成功'
-          })
-          this.$router.push('/article')
-        })
-      } else {
-        addArticle(this.article, draft).then(res => {
-          // console.log(res)
-          this.$message({
-            type: 'success',
-            message: '发表成功'
-          })
-          this.$router.push('/article')
-        })
-      }
+      this.$refs['publish-form'].validate(valid => {
+        if (valid) {
+          if (this.$route.query.id) {
+            updateArticle(this.$route.query.id, draft, this.article).then(res => {
+              // console.log(res)
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
+              this.$router.push('/article')
+            })
+          } else {
+            addArticle(this.article, draft).then(res => {
+              // console.log(res)
+              this.$message({
+                type: 'success',
+                message: '发表成功'
+              })
+              this.$router.push('/article')
+            })
+          }
+        } else {
+
+        }
+      })
     },
     loadChannels () {
       getChannels().then(res => {
