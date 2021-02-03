@@ -7,3 +7,11 @@ export const uploadImage = data => {
     data
   })
 }
+
+export const getImages = params => {
+  return request({
+    method: 'get',
+    url: '/mp/v1_0/user/images',
+    params
+  })
+}
