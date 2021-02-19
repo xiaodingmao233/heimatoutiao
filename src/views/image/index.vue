@@ -24,10 +24,12 @@
             ></el-image>
             <div class="image-action">
               <i
-               :class="{
-                 'el-icon-star-on': image.is_collected,
-                 'el-icon-star-off': !image.is_collected
-               }"
+                @click="onCollect(image)"
+                style="cursor: pointer;"
+                :class="{
+                  'el-icon-star-on': image.is_collected,
+                  'el-icon-star-off': !image.is_collected
+                }"
               ></i>
               <i class="el-icon-delete"></i>
             </div>
@@ -69,7 +71,7 @@
 </template>
 
 <script>
-import { getImages } from '@/api/image'
+import { getImages, collectImage } from '@/api/image'
 export default {
   name: 'ImageIndex',
   components: {},
@@ -107,15 +109,19 @@ export default {
         this.totalCount = res.data.data.total_count
       })
     },
-    // onCollectChange () {
-    //   this.loadImages(1)
-    // },
     onUploadSuccess () {
       this.dialogUploadVisible = false
       this.loadImages(this.page)
     },
     handleCurrentChange (page) {
       this.loadImages(page)
+    },
+    onCollect (image) {
+      console.log(image)
+      collectImage(image.id, !image.is_collected).then(res => {
+        console.log(res)
+        image.is_collected = !image.is_collected
+      })
     }
   }
 }

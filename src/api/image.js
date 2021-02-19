@@ -15,3 +15,13 @@ export const getImages = params => {
     params
   })
 }
+
+export const collectImage = (imageId, collect) => {
+  return request({
+    method: 'put',
+    url: `/mp/v1_0/user/images/${imageId}`,
+    data: {
+      collect
+    }
+  })
+}
