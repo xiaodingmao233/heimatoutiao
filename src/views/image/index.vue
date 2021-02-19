@@ -31,6 +31,7 @@
         @current-change="handleCurrentChange"
         :total="totalCount"
         :page-size="pageSize"
+        :current-page="page"
       >
       </el-pagination>
     </el-card>
@@ -70,6 +71,7 @@ export default {
       collect: false,
       totalCount: 0,
       pageSize: 20,
+      page: 1,
       images: [],
       dialogUploadVisible: false,
       uploadHeaders: {
