@@ -32,10 +32,12 @@
                 @click="onCollect(image)"
               ></el-button>
               <el-button
+                :loading='image.loading'
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
                 circle
+                @click="onDelete(image)"
               ></el-button>
          <!-- <i
                 @click="onCollect(image)"
@@ -85,7 +87,7 @@
 </template>
 
 <script>
-import { getImages, collectImage } from '@/api/image'
+import { getImages, collectImage, deleteImage } from '@/api/image'
 export default {
   name: 'ImageIndex',
   components: {},
@@ -140,6 +142,13 @@ export default {
       collectImage(image.id, !image.is_collected).then(res => {
         // console.log(res)
         image.is_collected = !image.is_collected
+        image.loading = false
+      })
+    },
+    onDelete (image) {
+      image.loading = true
+      deleteImage(image.id).then(res => {
+        this.loadImages(this.page)
         image.loading = false
       })
     }
