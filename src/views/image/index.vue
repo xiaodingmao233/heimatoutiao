@@ -23,7 +23,21 @@
               fit="cover"
             ></el-image>
             <div class="image-action">
-              <i
+              <el-button
+                :loading='image.loading'
+                type="success"
+                :icon="image.is_collected ? 'el-icon-star-on' : 'el-icon-star-off'"
+                size="mini"
+                circle
+                @click="onCollect(image)"
+              ></el-button>
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                size="mini"
+                circle
+              ></el-button>
+         <!-- <i
                 @click="onCollect(image)"
                 style="cursor: pointer;"
                 :class="{
@@ -31,7 +45,7 @@
                   'el-icon-star-off': !image.is_collected
                 }"
               ></i>
-              <i class="el-icon-delete"></i>
+              <i class="el-icon-delete"></i> -->
             </div>
           </el-col>
         </el-row>
@@ -105,7 +119,11 @@ export default {
         per_page: this.pageSize
       }).then(res => {
         // console.log(res.data.data.results)
-        this.images = res.data.data.results
+        const results = res.data.data.results
+        results.forEach(image => {
+          image.loading = false
+        })
+        this.images = results
         this.totalCount = res.data.data.total_count
       })
     },
@@ -117,10 +135,12 @@ export default {
       this.loadImages(page)
     },
     onCollect (image) {
-      console.log(image)
+      // console.log(image)
+      image.loading = true
       collectImage(image.id, !image.is_collected).then(res => {
-        console.log(res)
+        // console.log(res)
         image.is_collected = !image.is_collected
+        image.loading = false
       })
     }
   }
