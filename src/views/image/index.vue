@@ -16,12 +16,21 @@
       </div>
       <div>
         <el-row :gutter="10">
-          <el-col :xs="12" :sm="6" :lg="4" v-for="(image, id) in images" :key="id">
+          <el-col class="image-item" :xs="12" :sm="6" :lg="4" v-for="(image, id) in images" :key="id">
             <el-image
               style="height: 100px"
               :src="image.url"
               fit="cover"
             ></el-image>
+            <div class="image-action">
+              <i
+               :class="{
+                 'el-icon-star-on': image.is_collected,
+                 'el-icon-star-off': !image.is_collected
+               }"
+              ></i>
+              <i class="el-icon-delete"></i>
+            </div>
           </el-col>
         </el-row>
       </div>
@@ -87,6 +96,7 @@ export default {
   },
   methods: {
     loadImages (page = 1) {
+      this.page = page
       getImages({
         collect: this.collect,
         page,
@@ -102,7 +112,7 @@ export default {
     // },
     onUploadSuccess () {
       this.dialogUploadVisible = false
-      this.loadImages(1)
+      this.loadImages(this.page)
     },
     handleCurrentChange (page) {
       this.loadImages(page)
@@ -115,5 +125,22 @@ export default {
 .action-head {
   display: flex;
   justify-content: space-between;
+}
+
+.image-item {
+  position: relative;
+  .image-action {
+    position: absolute;
+    right: 5px;
+    bottom: 4px;
+    left: 5px;
+    height: 40px;
+    background: rgba(53, 50, 50, 0.5);
+
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 22px;
+  }
 }
 </style>
