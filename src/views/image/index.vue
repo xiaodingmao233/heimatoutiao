@@ -8,7 +8,7 @@
         </el-breadcrumb>
       </div>
       <div class="action-head" style="margin-bottom: 20px">
-        <el-radio-group @change="loadimage" v-model="collect" size="mini">
+        <el-radio-group @change="onCollectChange" v-model="collect" size="mini">
           <el-radio-button :label="false">全部</el-radio-button>
           <el-radio-button :label="true">收藏</el-radio-button>
         </el-radio-group>
@@ -25,6 +25,12 @@
           </el-col>
         </el-row>
       </div>
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        @current-change="handleCurrentChange"
+        :total="1000">
+      </el-pagination>
     </el-card>
     <el-dialog
       title="上传素材"
@@ -71,20 +77,28 @@ export default {
   watch: {},
   created () {},
   mounted () {
-    this.loadimage()
+    this.loadImages(1)
   },
   methods: {
-    loadimage () {
+    loadImages (page = 1) {
       getImages({
-        collect: this.collect
+        collect: this.collect,
+        page,
+        per_page: 20
       }).then(res => {
         // console.log(res.data.data.results)
         this.images = res.data.data.results
       })
     },
+    onCollectChange () {
+      this.loadImages(1)
+    },
     onUploadSuccess () {
       this.dialogUploadVisible = false
-      this.loadimage(false)
+      this.loadImages(false)
+    },
+    handleCurrentChange (page) {
+      this.loadImages(page)
     }
   }
 }
