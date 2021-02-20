@@ -50,3 +50,16 @@ export const updateArticle = (articleId, draft, data) => {
     data
   })
 }
+
+export const updateCommentStatus = (articleId, allowComment) => {
+  return request({
+    method: 'put',
+    url: '/mp/v1_0/comments/status',
+    params: {
+      article_id: articleId
+    },
+    data: {
+      allow_comment: allowComment
+    }
+  })
+}
