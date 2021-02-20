@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { getArticles } from '@/api/article'
 export default {
   name: 'CommentIndex',
   components: {},
@@ -66,19 +67,30 @@ export default {
         date: '2016-05-03',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      }],
+      articles: []
     }
   },
   computed: {},
   watch: {},
   created () {},
-  mounted () {},
+  mounted () {
+    this.loadArticles()
+  },
   methods: {
     handleSizeChange (val) {
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
+    },
+    loadArticles () {
+      getArticles({
+        response_type: 'comment'
+      }).then(res => {
+        this.articles = res.data.data.results
+        console.log(this.articles)
+      })
     }
   }
 }
