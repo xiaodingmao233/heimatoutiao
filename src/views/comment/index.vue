@@ -29,7 +29,7 @@
         >
         </el-table-column>
         <el-table-column
-          label="状态"
+          label="评论状态"
         >
           <template slot-scope="scope">
             {{ scope.row.comment_status ? '正常' : '关闭' }}
@@ -40,9 +40,12 @@
         >
           <template slot-scope="scope">
             <el-switch
+              :disabled="scope.row.disabled"
               v-model="scope.row.comment_status"
               active-color="#13ce66"
-              inactive-color="#ff4949">
+              inactive-color="#ff4949"
+              @change="onStatusChange(scope.row)"
+            >
             </el-switch>
           </template>
         </el-table-column>
@@ -63,7 +66,7 @@
 </template>
 
 <script>
-import { getArticles } from '@/api/article'
+import { getArticles, updateCommentStatus } from '@/api/article'
 export default {
   name: 'CommentIndex',
   components: {},
@@ -107,8 +110,24 @@ export default {
       getArticles({
         response_type: 'comment'
       }).then(res => {
-        this.articles = res.data.data.results
-        console.log(this.articles)
+        const results = res.data.data.results
+        results.forEach(item => {
+          item.disabled = false
+        })
+        this.articles = results
+        // console.log(this.articles)
+      })
+    },
+    onStatusChange (article) {
+      // console.log(article)
+      article.disabled = true
+      updateCommentStatus(article.id.toString(), article.comment_status).then(res => {
+        // console.log(res)
+        article.disabled = false
+        this.$message({
+          type: 'success',
+          message: article.comment_status ? '开启成功' : '关闭成功'
+        })
       })
     }
   }
