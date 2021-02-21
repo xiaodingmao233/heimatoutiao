@@ -53,12 +53,12 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="1"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page.sync="page"
+        :page-sizes="[10, 20, 50]"
+        :page-size.sync="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         background
-        :total="400"
+        :total="totalCount"
       >
       </el-pagination>
     </el-card>
@@ -90,7 +90,10 @@ export default {
         name: '王小虎',
         address: '上海市普陀区金沙江路 1516 弄'
       }],
-      articles: []
+      articles: [],
+      pageSize: 10,
+      totalCount: 0,
+      page: 1
     }
   },
   computed: {},
@@ -101,20 +104,28 @@ export default {
   },
   methods: {
     handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
+      // console.log(`每页 ${val} 条`)
+      // this.pageSize = val // 在:page-size.sync="pageSize" 加上.sync修饰符后就可以省略此步骤
+      this.loadArticles(1)
     },
     handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+      // console.log(`当前页: ${val}`)
+      this.loadArticles(val)
     },
-    loadArticles () {
+    loadArticles (page = 1) {
+      this.page = page
       getArticles({
-        response_type: 'comment'
+        response_type: 'comment',
+        page,
+        per_page: this.pageSize
       }).then(res => {
+        // console.log(res)
         const results = res.data.data.results
         results.forEach(item => {
           item.disabled = false
         })
         this.articles = results
+        this.totalCount = res.data.data.total_count
         // console.log(this.articles)
       })
     },
