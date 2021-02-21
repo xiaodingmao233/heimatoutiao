@@ -31,8 +31,11 @@
           </el-form>
         </el-col>
         <el-col :span="4" :offset="4">
-          <el-avatar shape="square" :size="150" fit="cover" :src="user.photo"></el-avatar>
-          <p>点击修改头像</p>
+          <label for="file" style="cursor: pointer;">
+            <el-avatar shape="square" :size="150" fit="cover" :src="user.photo"></el-avatar>
+          </label>
+          <p style="cursor: pointer;" @click="$refs.file.click()">点击修改头像</p>
+          <input id="file" type="file" hidden ref="file">
         </el-col>
       </el-row>
     </el-card>
@@ -79,7 +82,7 @@ export default {
     },
     loadUser () {
       getUserProfile().then(res => {
-        console.log(res)
+        // console.log(res)
         this.user = res.data.data
       })
     }
