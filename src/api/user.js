@@ -18,3 +18,13 @@ export const getUserProfile = () => {
     // }
   })
 }
+
+// 修改用户头像
+// 注意 data必须传递FormData对象
+export const updateUserPhoto = data => {
+  return request({
+    method: 'PATCH',
+    url: '/mp/v1_0/user/photo',
+    data
+  })
+}

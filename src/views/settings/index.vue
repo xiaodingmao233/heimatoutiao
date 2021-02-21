@@ -44,6 +44,7 @@
       :visible.sync="dialogVisible"
       append-to-body
       @opened="onDialogOpened"
+      @closed="onDialogClosed"
     >
       <div class="preview-image-wrap">
         <img
@@ -54,14 +55,14 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="onUpdatePhoto">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getUserProfile } from '@/api/user'
+import { getUserProfile, updateUserPhoto } from '@/api/user'
 import 'cropperjs/dist/cropper.css'
 import Cropper from 'cropperjs'
 
@@ -90,7 +91,8 @@ export default {
         photo: ''
       },
       dialogVisible: false,
-      perviewImage: ''
+      perviewImage: '',
+      cropper: null
     }
   },
   computed: {},
@@ -122,20 +124,50 @@ export default {
     },
     onDialogOpened () {
       const image = this.$refs['preview-image']
-
-      const cropper = new Cropper(image, {
-        aspectRatio: 16 / 9,
-        crop (event) {
-          console.log(event.detail.x)
-          console.log(event.detail.y)
-          console.log(event.detail.width)
-          console.log(event.detail.height)
-          console.log(event.detail.rotate)
-          console.log(event.detail.scaleX)
-          console.log(event.detail.scaleY)
-        }
+      // 裁切器 .replace 方法
+      if (this.cropper) {
+        this.cropper.replace(this.perviewImage)
+        return
+      }
+      this.cropper = new Cropper(image, {
+        aspectRatio: 1, // 1 / 1 裁切比例 16 / 9
+        viewMode: 1, // 无法裁切图片外部
+        dragMode: 'none', // 无法移动画布
+        cropBoxResizable: false
+        // crop (event) {
+        //   console.log(event.detail.x)
+        //   console.log(event.detail.y)
+        //   console.log(event.detail.width)
+        //   console.log(event.detail.height)
+        //   console.log(event.detail.rotate)
+        //   console.log(event.detail.scaleX)
+        //   console.log(event.detail.scaleY)
+        // }
       })
-      console.log(cropper)
+    },
+    onDialogClosed () {
+      // 销毁裁切器 重新初始化 性能消耗较大
+      // this.cropper.destroy()
+    },
+    onUpdatePhoto () {
+      // 获取裁切的图片对象
+      this.cropper.getCroppedCanvas().toBlob(file => {
+        const fd = new FormData()
+        fd.append('photo', file)
+        // 请求更新用户头像 请求提交 fd
+        updateUserPhoto(fd).then(res => {
+          console.log(res)
+          // 关闭对话框
+          this.dialogVisible = false
+          // 更新视图展示
+
+          // 直接把裁切结果的文件对象转为 blob数据 本地预览
+          this.user.photo = window.URL.createObjectURL(file)
+
+          // 把服务端返回的图片进行展示有点慢
+          // this.user.photo = res.data.data.photo
+        })
+      })
     }
   }
 }
