@@ -37,6 +37,7 @@
 
 <script>
 import { getUserProfile } from '@/api/user'
+import globalBus from '@/utils/global-bus'
 import AppAside from './components/aside'
 export default {
   name: 'LayoutIndex',
@@ -46,17 +47,29 @@ export default {
   props: {},
   data () {
     return {
-      user: {},
-      isCollapse: false
+      user: {}, // 当前登录用户信息
+      isCollapse: false // 侧边菜单栏的展示状态
     }
   },
   computed: {},
   watch: {},
   created () { },
   mounted () {
+    // 组件初始化好 请求获取用户资料
     this.loadUserProfile()
+
+    // 注册自定义事件
+    // 当这个事件发布以后 这个注册函数就会被调用到
+    globalBus.$on('update-user', data => {
+      // console.log('update-user', data)
+      // this.user = data // 注意 不要这么做 对象之间赋值的是引用 会导致相互影响的问题
+      this.user.name = data.name
+      this.user.photo = data.photo
+    })
   },
   methods: {
+    // 除了登录接口 其它说有接口都需要授权才能使用
+    // 或者说 除了登录接口 其它接口都需要提供你的身份令牌才能获取数据
     loadUserProfile () {
       getUserProfile().then((res) => {
         // console.log(res.data.data)
