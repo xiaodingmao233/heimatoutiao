@@ -24,9 +24,16 @@
           </el-radio-group>
           <template v-if="article.cover.type > 0">
             <upload-cover
-              v-for="cover in article.cover.type"
+              v-for="(cover, index) in article.cover.type"
               :key="cover"
+              v-model="article.cover.images[index]"
             ></upload-cover>
+            <!-- <upload-cover
+              v-for="(cover, index) in article.cover.type"
+              :key="cover"
+              :cover-image="article.cover.images[index]"
+              @update-cover="onUpdateCover(index, $event)"
+            ></upload-cover> -->
           </template>
         </el-form-item>
         <el-form-item label="频道" prop="channel_id">
@@ -118,7 +125,7 @@ export default {
         content: [
           {
             validator (rule, value, callback) {
-              console.log('11')
+              // console.log('11')
               if (value === '<p></p>') {
                 callback(new Error('请输入文章内容'))
               } else {
@@ -183,6 +190,10 @@ export default {
         // console.log(res)
         this.article = res.data.data
       })
+    },
+    onUpdateCover (index, url) {
+      // console.log(url)
+      this.article.cover.images[index] = url
     }
   }
 }

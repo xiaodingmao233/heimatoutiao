@@ -1,7 +1,11 @@
 <template>
   <div class="upload-cover" @click="showCoverSelect">
     <div class="cover-wrap">
-      <img class="cover-image" ref="cover-image">
+      <img
+        class="cover-image"
+        ref="cover-image"
+        :src="value"
+      >
     </div>
     <el-dialog
       title="提示"
@@ -28,7 +32,8 @@ import { uploadImage } from '@/api/image'
 export default {
   name: 'UploadCover',
   components: {},
-  props: {},
+  props: ['value'],
+  // props: ['cover-image'],
   data () {
     return {
       dialogVisible: false,
@@ -68,6 +73,9 @@ export default {
           console.log(res)
           this.dialogVisible = false
           this.$refs['cover-image'].src = res.data.data.url
+
+          // this.$emit('update-cover', res.data.data.url)
+          this.$emit('input', res.data.data.url)
         })
       }
     }
