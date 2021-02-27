@@ -13,7 +13,9 @@
       append-to-body
     >
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-        <el-tab-pane label="素材库" name="first">素材库</el-tab-pane>
+        <el-tab-pane label="素材库" name="first">
+          <image-list :is-show-action="false" :is-show-add="false"></image-list>
+        </el-tab-pane>
         <el-tab-pane label="上传图片" name="second">
           <input type="file" ref="file" @change="onFileChange">
           <img ref="preview-image" width="100px">
@@ -28,10 +30,13 @@
 </template>
 
 <script>
+import ImageList from '../../image/components/image-list'
 import { uploadImage } from '@/api/image'
 export default {
   name: 'UploadCover',
-  components: {},
+  components: {
+    ImageList
+  },
   props: ['value'],
   // props: ['cover-image'],
   data () {
