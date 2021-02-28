@@ -88,7 +88,7 @@ export default {
         title: '',
         content: '',
         cover: {
-          type: 0, // -1自动 0无图 1单图 3三图
+          type: 1, // -1自动 0无图 1单图 3三图
           images: []
         },
         channel_id: null

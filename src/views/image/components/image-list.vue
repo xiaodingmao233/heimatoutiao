@@ -15,6 +15,7 @@
             :src="image.url"
             fit="cover"
           ></el-image>
+          <div class="selected"></div>
           <div v-if="isShowAction" class="image-action">
             <el-button
               :loading='image.loading'
@@ -178,5 +179,17 @@ export default {
     align-items: center;
     font-size: 22px;
   }
+}
+.selected {
+  background: url('./selected.png') no-repeat;
+  background-size: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
