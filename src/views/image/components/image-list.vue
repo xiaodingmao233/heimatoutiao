@@ -9,13 +9,14 @@
     </div>
     <div>
       <el-row :gutter="10">
-        <el-col class="image-item" :xs="12" :sm="6" :lg="4" v-for="(image, id) in images" :key="id">
+        <el-col class="image-item" :xs="12" :sm="6" :lg="4" v-for="(image, index) in images" :key="index">
           <el-image
             style="height: 100px"
             :src="image.url"
             fit="cover"
+            @click="selected = index"
           ></el-image>
-          <div class="selected"></div>
+          <div class="selected" v-if="selected === index"></div>
           <div v-if="isShowAction" class="image-action">
             <el-button
               :loading='image.loading'
@@ -105,7 +106,8 @@ export default {
       dialogUploadVisible: false,
       uploadHeaders: {
         Authorization: `Bearer ${user.token}`
-      }
+      },
+      selected: null
     }
   },
   computed: {},
