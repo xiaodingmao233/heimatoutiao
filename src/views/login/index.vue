@@ -37,11 +37,15 @@ export default {
   data () {
     return {
       user: {
+        // 手机号
         mobile: '13911111111',
+        // 验证码
         code: '246810',
+        // 是否同意协议
         agree: false
       },
       loginLoading: false,
+      // 表单验证
       formRules: {
         mobile: [
           { required: true, message: '请输入手机号', trigger: 'change' },
@@ -68,14 +72,17 @@ export default {
   },
   methods: {
     onLogin () {
+      // 表单验证
       this.$refs['login-form'].validate(valid => {
         if (!valid) {
           return
         }
+        // 验证通过
         this.login()
       })
     },
     login () {
+      // 按钮添加 loading 状态
       this.loginLoading = true
       login(this.user).then((res) => {
         // console.log('登录成功', res)
@@ -83,6 +90,7 @@ export default {
           message: '登录成功',
           type: 'success'
         })
+        // 改变 loading
         this.loginLoading = false
         // this.$router.push('/')
         window.localStorage.setItem('user', JSON.stringify(res.data.data))
@@ -91,10 +99,12 @@ export default {
         })
       }).catch((err) => {
         console.log('登录失败', err)
+        // 登录失败
         this.$message({
           message: '登录失败',
           type: 'error'
         })
+        // 改变 loading
         this.loginLoading = false
       })
     }

@@ -24,6 +24,10 @@
           </div>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>个人中心</el-dropdown-item>
+            <!--
+              组件默认是不识别原生事件的，除非内部做了处理
+              https://cn.vuejs.org/v2/guide/components-custom-events.html#%E5%B0%86%E5%8E%9F%E7%94%9F%E4%BA%8B%E4%BB%B6%E7%BB%91%E5%AE%9A%E5%88%B0%E7%BB%84%E4%BB%B6
+             -->
             <el-dropdown-item @click.native="logout">用户退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -48,7 +52,7 @@ export default {
   data () {
     return {
       user: {}, // 当前登录用户信息
-      isCollapse: false // 侧边菜单栏的展示状态
+      isCollapse: false // 侧边菜单栏是否折叠
     }
   },
   computed: {},
@@ -76,6 +80,7 @@ export default {
         this.user = res.data.data
       })
     },
+    // 注销
     logout () {
       this.$confirm('确定退出吗?', '退出提示', {
         confirmButtonText: '确定',
@@ -86,7 +91,9 @@ export default {
           type: 'success',
           message: '退出成功!'
         })
+        // 把用户的登录状态清除
         window.localStorage.removeItem('user')
+        // 跳转到登录页面
         this.$router.push({
           name: 'login'
         })

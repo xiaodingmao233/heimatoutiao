@@ -7,7 +7,7 @@
 <script>
 import * as echarts from 'echarts'
 export default {
-  name: '',
+  name: 'Fans',
   components: {},
   props: {},
   data () {

@@ -85,15 +85,15 @@ export default {
   data () {
     return {
       article: {
-        title: '',
-        content: '',
+        title: '', // 文章标题
+        content: '', // 文章内容
         cover: {
           type: 1, // -1自动 0无图 1单图 3三图
-          images: []
+          images: [] // 封面图片的地址
         },
         channel_id: null
       },
-      channels: [],
+      channels: [], // 文章频道列表
       extensions: [
         new Doc(),
         new Text(),
@@ -107,8 +107,10 @@ export default {
           uploadRequest (file) {
             const fd = new FormData()
             fd.append('image', file)
+            // 返回 promise 对象
             return uploadImage(fd).then(res => {
               // console.log(res)
+              // 返回结果
               return res.data.data.url
             })
           }
@@ -144,14 +146,18 @@ export default {
   computed: {},
   watch: {},
   created () {
+    // 加载频道
     this.loadChannels()
     // console.log(this.$route.query.id)
+    // 如果路由中有 id 则请求展示文章内容
     if (this.$route.query.id) {
+      // 加载要修改的文章详情
       this.loadArticle()
     }
   },
-  mounted () { },
+  mounted () {},
   methods: {
+    // 发布文章
     onPublish (draft = false) {
       this.$refs['publish-form'].validate(valid => {
         if (valid) {
@@ -179,12 +185,14 @@ export default {
         }
       })
     },
+    // 加载频道
     loadChannels () {
       getChannels().then(res => {
         this.channels = res.data.data.channels
         // console.log(this.channels)
       })
     },
+    // 获取文章内容
     loadArticle () {
       getArticle(this.$route.query.id).then(res => {
         // console.log(res)

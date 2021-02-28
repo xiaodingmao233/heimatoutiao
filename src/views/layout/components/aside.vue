@@ -1,4 +1,7 @@
 <template>
+<!--
+  el-menu-item 的 index 不能重复 确保唯一即可
+ -->
   <el-menu
     :default-active="$route.path"
     class="el-menu-vertical-demo"

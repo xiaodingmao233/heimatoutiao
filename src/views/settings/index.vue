@@ -80,8 +80,8 @@ export default {
         mobile: '',
         name: '',
         photo: ''
-      },
-      dialogVisible: false,
+      }, // 用户资料
+      dialogVisible: false, // 控制上传图片裁切预览的显示状态
       perviewImage: '', // 预览图片
       cropper: null, // 裁切器示例
       updatePhotoLoading: false, // 更新用户头像的 loading 状态
@@ -134,12 +134,20 @@ export default {
       this.$refs.file.value = ''
     },
     onDialogOpened () {
+      // 图片裁切器必须基于 img 进行初始化
+      // 注意 img 必须是可见状态才能正常完成初始化
+      // 因为我们这里要在对话框里面初始化裁切器
+      // 所以务必要在对话框完全打开的状态去进行初始化
+      // 获取图片 DOM 节点
       const image = this.$refs['preview-image']
-      // 裁切器 .replace 方法
+      // 第一次初始化好以后 如果预览裁切的图片发生了变化 裁切器默认不会更新
+      // 如果需要预览图片发生变化更新裁切器
+      // 方法一 裁切器 .replace 方法
       if (this.cropper) {
         this.cropper.replace(this.perviewImage)
         return
       }
+      // 初始化裁切器
       this.cropper = new Cropper(image, {
         aspectRatio: 1, // 1 / 1 裁切比例 16 / 9
         viewMode: 1, // 无法裁切图片外部
@@ -157,7 +165,7 @@ export default {
       })
     },
     onDialogClosed () {
-      // 销毁裁切器 重新初始化 性能消耗较大
+      // 方法二 销毁裁切器 重新初始化 性能消耗较大
       // this.cropper.destroy()
     },
     onUpdatePhoto () {

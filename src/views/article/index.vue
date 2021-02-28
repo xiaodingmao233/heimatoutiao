@@ -2,11 +2,13 @@
   <div class="article-container">
     <el-card class="filter-card">
       <div slot="header" class="clearfix">
+        <!-- 面包屑 -->
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item>内容管理</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
+      <!-- 筛选表单 -->
       <el-form label-width="40px" size="small">
         <el-form-item label="状态">
           <el-radio-group v-model="status">
@@ -42,6 +44,10 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item>
+          <!--
+            button 按钮的 click 事件有个默认参数
+            当你没有指定参数的时候 他会默认传递一个没用的数据
+           -->
           <el-button :disabled="loading" type="primary" @click="loadArticles()"
             >查询</el-button
           >
@@ -49,10 +55,12 @@
       </el-form>
     </el-card>
 
+    <!-- 查询结果 -->
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>根据筛选条件共查询到 {{ this.totalCount }} 条结果:</span>
       </div>
+      <!-- 表格 -->
       <el-table
         class="list-table"
         :data="articles"
@@ -83,6 +91,7 @@
         </el-table-column>
         <el-table-column prop="title" label="标题"> </el-table-column>
         <el-table-column label="状态">
+          <!-- 如果需要在自定义列模板中获取当前遍历项数据 那么就在 template 上声明 slot-scope="scope" -->
           <template slot-scope="scope">
             <el-tag :type="articleStatus[scope.row.status].type">{{
               articleStatus[scope.row.status].text
@@ -91,6 +100,7 @@
         </el-table-column>
         <el-table-column prop="pubdate" label="发布日期"> </el-table-column>
         <el-table-column label="操作">
+          <!-- 如果需要自定义表格列模板 则把需要自定义的内容放到 template 里面 -->
           <template slot-scope="scope">
             <el-button size="mini" type="primary" icon="el-icon-edit" circle @click="$router.push('/publish?id=' + scope.row.id)">
             </el-button>
@@ -104,6 +114,12 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 分页 -->
+      <!--
+        :total="totalCount" 自动计算 以10条每页默认计算
+        可以自定义 page-size
+        total/page-size
+       -->
       <el-pagination
         @current-change="onCurrentChange"
         background
@@ -126,6 +142,7 @@ export default {
   props: {},
   data () {
     return {
+      // 文章列表
       articles: [],
       articleStatus: [
         { status: 0, text: '草稿', type: 'info' },
@@ -134,13 +151,20 @@ export default {
         { status: 3, text: '审核失败', type: 'warning' },
         { status: 4, text: '已删除', type: 'danger' }
       ],
+      // 总数据数量
       totalCount: 0,
+      // 每页展示数量
       pageSize: 10,
+      // 查询文章的状态 不传就是全部
       status: null,
+      // 文章频道
       channels: [],
+      // 查询文章的频道
       channelId: null,
+      // 范围日期
       rangeDate: null,
       loading: true,
+      // 当前页码
       page: 1
     }
   },
@@ -152,23 +176,26 @@ export default {
     this.loadChannels()
   },
   methods: {
+    // 加载文章
     loadArticles (page) {
       this.loading = true
       getArticles({
         page,
-        per_page: this.pageSize,
-        status: this.status,
-        channel_id: this.channelId,
-        begin_pubdate: this.rangeDate ? this.rangeDate[0] : null,
-        end_pubdate: this.rangeDate ? this.rangeDate[1] : null
+        per_page: this.pageSize, // 每页大小
+        status: this.status, // 查询文章的状态
+        channel_id: this.channelId, // 查询文章的频道
+        begin_pubdate: this.rangeDate ? this.rangeDate[0] : null, // 开始日期
+        end_pubdate: this.rangeDate ? this.rangeDate[1] : null // 截止日期
       }).then(res => {
         // console.log(res)
+        // total_count: totalCount 重命名
         const { results, total_count: totalCount } = res.data.data
         this.articles = results
         this.totalCount = totalCount
         this.loading = false
       })
     },
+    // 加载频道
     loadChannels () {
       getChannels().then(res => {
         this.channels = res.data.data.channels
@@ -178,6 +205,7 @@ export default {
     onCurrentChange (page) {
       this.loadArticles(page)
     },
+    // 删除文章
     onDeleteArticle (articleId) {
       this.$confirm('确定删除吗?', '删除提示', {
         confirmButtonText: '确定',

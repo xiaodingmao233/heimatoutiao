@@ -2,6 +2,7 @@
   <div class="comment-container">
    <el-card class="box-card">
       <div slot="header" class="clearfix">
+        <!-- 面包屑 -->
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item>评论管理</el-breadcrumb-item>
@@ -100,7 +101,7 @@ export default {
       getArticles({
         response_type: 'comment',
         page,
-        per_page: this.pageSize
+        per_page: this.pageSize // 每页大小
       }).then(res => {
         // console.log(res)
         const results = res.data.data.results

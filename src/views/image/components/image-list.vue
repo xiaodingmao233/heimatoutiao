@@ -8,6 +8,7 @@
       <el-button v-if="isShowAdd" size="mini" type="success" @click="dialogUploadVisible=true">上传素材</el-button>
     </div>
     <div>
+      <!-- 素材列表 -->
       <el-row :gutter="10">
         <el-col class="image-item" :xs="12" :sm="6" :lg="4" v-for="(image, index) in images" :key="index">
           <el-image
@@ -105,12 +106,16 @@ export default {
   data () {
     const user = JSON.parse(window.localStorage.getItem('user'))
     return {
+      // 是否查看收藏 true 查看
       collect: false,
       totalCount: 0,
       pageSize: 20,
       page: 1,
+      // 素材数据
       images: [],
+      // 弹出框
       dialogUploadVisible: false,
+      // 请求头
       uploadHeaders: {
         Authorization: `Bearer ${user.token}`
       },
@@ -140,6 +145,7 @@ export default {
         this.totalCount = res.data.data.total_count
       })
     },
+    // 图片上传成功
     onUploadSuccess () {
       this.dialogUploadVisible = false
       this.loadImages(this.page)
@@ -147,6 +153,7 @@ export default {
     handleCurrentChange (page) {
       this.loadImages(page)
     },
+    // 收藏 取消收藏
     onCollect (image) {
       // console.log(image)
       image.loading = true
@@ -156,6 +163,7 @@ export default {
         image.loading = false
       })
     },
+    // 删除图片
     onDelete (image) {
       image.loading = true
       deleteImage(image.id).then(res => {
