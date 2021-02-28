@@ -16,7 +16,10 @@
             fit="cover"
             @click="selected = index"
           ></el-image>
-          <div class="selected" v-if="selected === index"></div>
+          <div
+            class="selected"
+            v-if="isShowSelected && selected === index"
+          ></div>
           <div v-if="isShowAction" class="image-action">
             <el-button
               :loading='image.loading'
@@ -93,6 +96,10 @@ export default {
     isShowAction: {
       type: Boolean, // 布尔值
       default: true // 默认值
+    },
+    isShowSelected: {
+      type: Boolean,
+      default: false
     }
   },
   data () {

@@ -22,6 +22,7 @@
           <image-list
             :is-show-action="false"
             :is-show-add="false"
+            is-show-selected
             ref="image-list"
           ></image-list>
         </el-tab-pane>
