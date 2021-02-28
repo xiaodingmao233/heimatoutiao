@@ -14,7 +14,16 @@
     >
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
         <el-tab-pane label="素材库" name="first">
-          <image-list :is-show-action="false" :is-show-add="false"></image-list>
+          <!--
+            ref 有两个作用
+            1、 作用到普通 HTML 标签上可以获取 DOM
+            2、 作用到组件上可以获取组件
+           -->
+          <image-list
+            :is-show-action="false"
+            :is-show-add="false"
+            ref="image-list"
+          ></image-list>
         </el-tab-pane>
         <el-tab-pane label="上传图片" name="second">
           <input type="file" ref="file" @change="onFileChange">
@@ -66,6 +75,7 @@ export default {
       // this.$refs.file.value = ''
     },
     onCoverConfirm () {
+      // 如果 tab 是上传图片 并且 input-file 有选择的文件 才执行上传图片的操作
       if (this.activeName === 'second') {
         const file = this.$refs.file.files[0]
         if (!file) {
@@ -82,6 +92,19 @@ export default {
           // this.$emit('update-cover', res.data.data.url)
           this.$emit('input', res.data.data.url)
         })
+      } else if (this.activeName === 'first') {
+        // 还有一种组件通信方式 父组件可以直接访问子组件中的数据
+        const imageList = this.$refs['image-list']
+        // console.log(imageList.selected)
+        const selected = imageList.selected
+        if (selected === null) {
+          this.$message('请选择封面图片')
+          return
+        }
+        // 关闭对话框
+        this.dialogVisible = false
+        // 修改父组件
+        this.$emit('input', imageList.images[selected].url)
       }
     }
   }
